@@ -11,6 +11,13 @@
 |
 */
 
+use App\Http\Controllers\Maps;
+use App\Http\Controllers\Maps\CustomMapBackgroundController;
+use App\Http\Controllers\Maps\CustomMapController;
+use App\Http\Controllers\Maps\CustomMapDataController;
+use App\Http\Controllers\Maps\CustomMapNodeImageController;
+use App\Http\Controllers\Maps\DeviceDependencyController;
+
 Route::prefix('v0')->group(function () {
     Route::get('system', [App\Api\Controllers\LegacyApiController::class, 'server_info'])->name('server_info');
     Route::get('', [App\Api\Controllers\LegacyApiController::class, 'show_endpoints']);
@@ -176,6 +183,21 @@ Route::prefix('v0')->group(function () {
         Route::get('nac/{mac}', [App\Api\Controllers\LegacyApiController::class, 'list_nac'])->name('list_nac_mac');
         Route::get('sensors', [App\Api\Controllers\LegacyApiController::class, 'list_sensors'])->name('list_sensors');
         Route::get('vlans', [App\Api\Controllers\LegacyApiController::class, 'list_vlans'])->name('list_vlans');
+    });
+
+    Route::prefix('topology')->group(function () {
+        Route::get('get_raw_topology', 'LegacyApiController@get_raw_topology')->name('get_raw_topology');
+        Route::get('graph_data', 'LegacyApiController@generate_graph_by_url')->name('generate_graph_by_url');
+        Route::get('show_health', 'LegacyApiController@show_health')->name('show_health');
+        Route::get('show_graph', 'LegacyApiController@show_graph')->name('show_graph');
+        Route::get('discovery/from', 'LegacyApiController@trigger_auto_discovery')->name('trigger_auto_discovery');
+        Route::prefix('health')->group(function () {
+            Route::get('overview/device/{id}', 'LegacyApiController@buildDeviceGraphArrays')->name('buildDeviceGraphArrays');
+            Route::get('processor/device/{id}', 'LegacyApiController@custom_health_processor')->name('custom_health_processor');
+            Route::get('mempool/device/{id}', 'LegacyApiController@custom_health_mempool')->name('custom_health_mempool');
+        });
+        Route::post('getdevices', [Maps\MapDataController::class, 'getDevices'])->name('maps.getdevices');
+        Route::post('getdevicelinks', [Maps\MapDataController::class, 'getDeviceLinks'])->name('maps.getdevicelinks');
     });
 
     Route::get('inventory/{hostname}', [App\Api\Controllers\LegacyApiController::class, 'get_inventory'])->name('get_inventory');
