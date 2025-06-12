@@ -196,8 +196,8 @@ Route::prefix('v0')->group(function () {
             Route::get('processor/device/{id}', 'LegacyApiController@custom_health_processor')->name('custom_health_processor');
             Route::get('mempool/device/{id}', 'LegacyApiController@custom_health_mempool')->name('custom_health_mempool');
         });
-        Route::post('getdevices', [Maps\MapDataController::class, 'getDevices'])->name('maps.getdevices');
-        Route::post('getdevicelinks', [Maps\MapDataController::class, 'getDeviceLinks'])->name('maps.getdevicelinks');
+        Route::post('getdevices', [Maps\MapDataController::class, 'getDevices'])->name('maps.getdevices_topology');
+        Route::post('getdevicelinks', [Maps\MapDataController::class, 'getDeviceLinks'])->name('maps.getdevicelinks_topology');
     });
 
     Route::get('inventory/{hostname}', [App\Api\Controllers\LegacyApiController::class, 'get_inventory'])->name('get_inventory');
