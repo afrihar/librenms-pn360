@@ -17,6 +17,7 @@ use App\Http\Controllers\Maps\CustomMapController;
 use App\Http\Controllers\Maps\CustomMapDataController;
 use App\Http\Controllers\Maps\CustomMapNodeImageController;
 use App\Http\Controllers\Maps\DeviceDependencyController;
+use App\Api\Controllers\LegacyApiController;
 
 Route::prefix('v0')->group(function () {
     Route::get('system', [App\Api\Controllers\LegacyApiController::class, 'server_info'])->name('server_info');
@@ -186,16 +187,18 @@ Route::prefix('v0')->group(function () {
     });
 
     Route::prefix('topology')->group(function () {
-        Route::get('get_raw_topology', 'LegacyApiController@get_raw_topology')->name('get_raw_topology');
-        Route::get('graph_data', 'LegacyApiController@generate_graph_by_url')->name('generate_graph_by_url');
-        Route::get('show_health', 'LegacyApiController@show_health')->name('show_health');
-        Route::get('show_graph', 'LegacyApiController@show_graph')->name('show_graph');
-        Route::get('discovery/from', 'LegacyApiController@trigger_auto_discovery')->name('trigger_auto_discovery');
+        Route::get('get_raw_topology', [LegacyApiController::class, 'get_raw_topology'])->name('get_raw_topology');
+        Route::get('graph_data', [LegacyApiController::class, 'generate_graph_by_url'])->name('generate_graph_by_url');
+        Route::get('show_health', [LegacyApiController::class, 'show_health'])->name('show_health');
+        Route::get('show_graph', [LegacyApiController::class, 'show_graph'])->name('show_graph');
+        Route::get('discovery/from', [LegacyApiController::class, 'trigger_auto_discovery'])->name('trigger_auto_discovery');
+
         Route::prefix('health')->group(function () {
-            Route::get('overview/device/{id}', 'LegacyApiController@buildDeviceGraphArrays')->name('buildDeviceGraphArrays');
-            Route::get('processor/device/{id}', 'LegacyApiController@custom_health_processor')->name('custom_health_processor');
-            Route::get('mempool/device/{id}', 'LegacyApiController@custom_health_mempool')->name('custom_health_mempool');
+            Route::get('overview/device/{id}', [LegacyApiController::class, 'buildDeviceGraphArrays'])->name('buildDeviceGraphArrays');
+            Route::get('processor/device/{id}', [LegacyApiController::class, 'custom_health_processor'])->name('custom_health_processor');
+            Route::get('mempool/device/{id}', [LegacyApiController::class, 'custom_health_mempool'])->name('custom_health_mempool');
         });
+
         Route::post('getdevices', [Maps\MapDataController::class, 'getDevices'])->name('maps.getdevices_topology');
         Route::post('getdevicelinks', [Maps\MapDataController::class, 'getDeviceLinks'])->name('maps.getdevicelinks_topology');
     });
